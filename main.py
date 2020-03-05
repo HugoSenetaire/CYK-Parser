@@ -20,6 +20,8 @@ if __name__ == "__main__" :
 ## Read Files and create pcfg :
     split_file("Data/sequoia-corpus+fct.mrg_strict", write = True)
     listTrees = data_to_tree("Data/train")
+    listTrees_val = data_to_tree("Data/val")
+    listTrees_test = data_to_tree("Data/test")
     pcfg = PCFG()
     pcfg.learn(listTrees)
 
@@ -29,9 +31,12 @@ if __name__ == "__main__" :
     # Map words to indices and vice versa
     word_id = {w:i for (i, w) in enumerate(words)}
     id_word = dict(enumerate(words))
-    
+    # Put embeddings in PCFG
+    pcfg.add_embedding(embeddings, word_id, id_word)
     
 
-
+##Simple Test
     print(pcfg.CYK("Je apprend des expositions ."))
+    print(pcfg.CYK("Je mange des pommes ."))
 
+## Global evaluation :

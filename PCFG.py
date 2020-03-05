@@ -3,6 +3,7 @@ from collections import defaultdict
 from nltk import *
 from nltk.tree import Tree
 import numpy as np
+from OOV import *
 
 class PCFG():
     def __init__(self):
@@ -11,6 +12,11 @@ class PCFG():
 
         self.lexicon = {}
         self.lexicon_count = defaultdict(int)
+
+
+        self.embeddings = None
+        self.word_id = {}
+        self.id_word = {}
     
     def learn(self,listTree):
         # print(listTree)
@@ -54,28 +60,51 @@ class PCFG():
         #     compteur+=1
         #     if compteur == 10 :
         #         break
+    def add_embedding(self,embeddings, word_id, id_word):
+        self.embeddings = embeddings
+        self.word_id = word_id
+        self.id_word = id_word
 
-    def CYK(self,sentence):
+
+
+    def CYK(self,sentence,verbose = False):
         words = sentence.split(" ")
+        if verbose :
+            print("Original sentence :")
+            print(sentence)
+        
         diagonal_table = []
+        self.dic_replacement = {}
+        new_sentence = ""
+
+
 
         back = [[defaultdict() for i in range(len(words)-i)]for i in range(len(words))] 
         log_pr = [[{} for i in range(len(words)-i)]for i in range(len(words))] 
-        # print(len(log_pr))
         diagonal_table.append([])
         for k in range(0,len(words)):
             diagonal_table[0].append([])
-            for s in self.lexicon[words[k]]:
-               
+
+            # Treating OOV :
+            if words[k] not in self.lexicon :
+                word, proba = closest(words[k], self.lexicon, self.embeddings,  self.word_id, self.id_word)
+                if verbose :
+                    print(f"{words[k]} is replaced by {word}")
+            else :
+                word = words[k]
+                proba = 1
+            self.dic_replacement[k,word] = words[k]
+            new_sentence+=word + " "
+
+            for s in self.lexicon[word]:
                 diagonal_table[0][k]=[s]
-                # print(diagonal_table)
-                log_prob = np.log(self.lexicon[words[k]][s])
-                log_pr[0][k][s] = (log_prob,0,k,words[k])
-                back[0][k][s]= (0,k,words[k])
-                ## PROBLEME AVEC LE BACK, ON POURRAIT EN AVOIR DEUX DANS LE MEME LIGNE SUR 2 COLONNES DIFFERENTES IDENTIQUES
+                log_prob = np.log(self.lexicon[word][s]) + np.log(proba)
+                log_pr[0][k][s] = (log_prob,0,k,word)
+                back[0][k][s]= (0,k,word)
                 
-                
-        # print(back[0])
+        if verbose :
+            print("Auxiliary sentence :")
+            print(new_sentence)
         for i in range(1,len(words)): # place in the pyramid i=1 : taille 2
             diagonal_table.append([])
             for init in range(len(words)-i): # Place in the row of the pyramid
@@ -126,7 +155,7 @@ class PCFG():
             for element in list_back[5]:
                 list_children.append(self.build_tree(back,list_back[3], list_back[4], (element,)))
         else :
-            list_children = [back[i][j][value][2]]
+            list_children = [self.dic_replacement[j,back[i][j][value][2]]]
         tree = Tree(value[0],list_children)
         return tree
         

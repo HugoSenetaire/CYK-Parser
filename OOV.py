@@ -4,6 +4,8 @@ import re
 import numpy as np
 
 def damereau_levenshtein_distance(sinput, soutput):
+    print(sinput)
+    print(soutput)
     m = np.zeros(len(sinput),len(soutput))
     for i in range(len(sinput)):
         m[i,0] = 0
@@ -40,6 +42,7 @@ def case_normalizer(word, dictionary):
 
 def normalize(word, word_id):
     """ Find the closest alternative in case the word is OOV."""
+    DIGITS = re.compile("[0-9]", re.UNICODE)
     if not word in word_id:
         word = DIGITS.sub("#", word)
     if not word in word_id:
@@ -54,10 +57,11 @@ def normalize(word, word_id):
 # Regarder pour prendre en compte plusieurs mots.... Faisable largement avec mon implémentation
 # On pourrait commencer à regarder l'embedding directement
 # Checker si y'a pas des problèmes d'espaces également !
-def closest(word, embeddings, lexicon, word_id, id_word):
-
-    word = normalize(word, word_id)
-    if not word:
+def closest(word, lexicon, embeddings = None, word_id = {}, id_word = {}): # Regarder si il faut pas un default dict
+    
+    
+    wordNew = normalize(word, word_id)
+    if (not wordNew) or (embeddings is None):
         print("OOV word")
         # proposals = get_proposals(word)
         best_dist = float("inf")
@@ -71,6 +75,7 @@ def closest(word, embeddings, lexicon, word_id, id_word):
 
 
     else :
+        word = wordNew
         word_index = word_id[word]
         e = embeddings[word_index]
 
@@ -85,6 +90,8 @@ def closest(word, embeddings, lexicon, word_id, id_word):
                     best_dist = distance
                     best_word = word_test
         return best_word,1.0
+
+
 
         
 
