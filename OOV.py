@@ -4,13 +4,11 @@ import re
 import numpy as np
 
 def damereau_levenshtein_distance(sinput, soutput):
-    print(sinput)
-    print(soutput)
-    m = np.zeros(len(sinput),len(soutput))
+    m = np.zeros((len(sinput),len(soutput)))
     for i in range(len(sinput)):
-        m[i,0] = 0
+        m[i,0] = i
     for j in range(len(soutput)):
-        m[0,j] = 0
+        m[0,j] = j
     
     for i in range(1, len(sinput)):
         for j in range(1,len(soutput)):
@@ -18,7 +16,7 @@ def damereau_levenshtein_distance(sinput, soutput):
                 m[i,j] = min(m[i-1,j]+1,m[i,j-1]+1, m[i-1,j-1])
             else :
                 m[i,j] = min(m[i-1,j]+1,m[i,j-1]+1, m[i-1,j-1]+1)
-            if i>1 and j>1 :
+            if i>1 and j>1 and sinput[i-1]==soutput[j] and sinput[i]==soutput[j-1] :
                 m[i,j] = min(m[i,j], m[i-2,j-2]+1)
     return m[-1,-1]
 
@@ -50,28 +48,33 @@ def normalize(word, word_id):
 
     if not word in word_id:
         return None
+
+
     return word
 
 
 
-# Regarder pour prendre en compte plusieurs mots.... Faisable largement avec mon implémentation
+# Regarder pour prendre en compte plusieurs mots.... Faisable largement avec mon implémentatio: Peut être utile si distance levenstein trop longue ou autre. On peut quasiment déduire de tous les mots son type
 # On pourrait commencer à regarder l'embedding directement
 # Checker si y'a pas des problèmes d'espaces également !
-def closest(word, lexicon, embeddings = None, word_id = {}, id_word = {}): # Regarder si il faut pas un default dict
-    
-    
+#
+def closest(word, lexicon, embeddings = None, word_id = {}, id_word = {}, possibleNPP = True): # Regarder si il faut pas un default dict
+    liste = []
+    if word[0].isupper() and possibleNPP : # Check for NPP
+        liste.append(('Cora',0.01))
+        
     wordNew = normalize(word, word_id)
     if (not wordNew) or (embeddings is None):
-        print("OOV word")
-        # proposals = get_proposals(word)
         best_dist = float("inf")
         best_word = None
         for word_test in lexicon :
             dist = damereau_levenshtein_distance(word,word_test)
             if dist < best_dist :
                 best_dist = dist 
-                best_word = word
-        return best_word,1.0
+                best_word = word_test
+        longestWord = max(len(best_word),len(word))
+        liste.append((best_word,max(longestWord-dist,1.0)/longestWord))
+        return liste
 
 
     else :
@@ -89,7 +92,8 @@ def closest(word, lexicon, embeddings = None, word_id = {}, id_word = {}): # Reg
                 if distance > best_dist:
                     best_dist = distance
                     best_word = word_test
-        return best_word,1.0
+        liste.append((best_word,1.0))
+        return liste
 
 
 
