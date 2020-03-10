@@ -13,7 +13,7 @@ def split_file(filepath, write = False):
     nbLines = len(lines)
     # np.random.seed(1)
     # np.random.shuffle(lines)
-    trainLines = lines[:int(0.8*nbLines)]
+    trainLines = lines[:int(0.9*nbLines)]
     testLines = lines[int(0.8*nbLines):int(0.9*nbLines)]
     # aux = lines[:int(0.9*nbLines)]
     # np.random.shuffle(aux)
@@ -44,14 +44,6 @@ def clean_data(tree):
         if isinstance(child, Tree):
             clean_data(child)
     
-# def print_data(tree):
-#     print(tree.label())
-#     for child in tree:
-#         if isinstance(child, Tree):
-#             print_data(child)
-#         else :
-#             print("Child", child)
-
 
 def get_terminal(tree):
     """ Get terminal symbol for the tree """
@@ -62,24 +54,6 @@ def get_terminal(tree):
         else :
             leaves.append((child,tree.label()))
 
-# def get_nonterminals(tree):
-    # rules = []
-    # subtrees = tree.subtrees()
-    # leaf = False
-    # for sub in subtrees :
-    #     sonLabel = []
-    #     for child in sub :
-    #         if isinstance(child,Tree):
-    #             sonLabel.append(child.label())
-    #         else :
-    #             leaf =True
-    #             break
-    #     if not leaf and len(sub.label())>0 :
-    #         rules.append((sub.label(),sonLabel))
-    # return rules
-
-# def get_production(tree):
-#     productions
 
 def clean_leaves(tree, symbol = "&"):
     """ clean leaves from the collapsing symbol 
@@ -111,10 +85,6 @@ def data_to_tree(filepath):
         tree = Tree.fromstring(line)
         clean_data(tree[0]) # Delete '-' from labels
         tree.collapse_unary(collapsePOS = True,joinChar = "&")
-        # print(type(tree.label()))
-        # if len(tree)>1:
-            # clean_leaves(tree)
-        # collapse_unary(tree)
         tree.chomsky_normal_form(horzMarkov=2)
         listTrees.append(tree)
     return listTrees

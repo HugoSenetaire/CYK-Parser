@@ -61,4 +61,4 @@ if __name__ == "__main__" :
     # print(pcfg.CYK(aux, verbose =True))
 ## Global evaluation :
     # evaluate_parser(pcfg, listTrees_test, filepath="parser_output.txt", write = False)
-    evaluate_parser(pcfg, listTrees_val, filepath="parser_output.txt", write = True)
+    evaluate_parser_multiprocess(pcfg, listTrees_val, filepath="parser_output.txt", write = True)

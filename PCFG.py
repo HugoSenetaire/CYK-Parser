@@ -56,17 +56,18 @@ class PCFG():
                         self.lexicon_count[str(production.rhs()[0])]+=10
                     else :
                         B = str(production.lhs()).split("&")[-1]
-                        A = str(production.lhs()).strip("&"+B)
-                        A = (grammar.Nonterminal(A),)
+                        # A = str(production.lhs()).strip("&"+B)
+                        # A = (grammar.Nonterminal(A),)
                         B = (grammar.Nonterminal(B),)
-                        if A not in self.lexicon :
-                            self.lexicon[A] = defaultdict(float)
+
+                        # if A not in self.lexicon :
+                            # self.lexicon[A] = defaultdict(float)
                         if B not in self.lexicon :
                             self.lexicon[B] = defaultdict(float)
 
                         self.lexicon[str(production.rhs()[0])][(production.lhs(),)]+=8.
-                        self.lexicon[str(production.rhs()[0])][A]+=1.
-                        self.lexicon[str(production.rhs()[0])][B]+=1.
+                        # self.lexicon[str(production.rhs()[0])][A]+=1.
+                        self.lexicon[str(production.rhs()[0])][B]+=2.
                         self.lexicon_count[str(production.rhs()[0])]+=10
                     
                 else :
@@ -124,8 +125,8 @@ class PCFG():
 
 
 
-        back = [[{} for i in range(len(words)-i)]for i in range(len(words))] 
-        log_pr = [[{} for i in range(len(words)-i)]for i in range(len(words))] 
+        back = [[{} for i in range(len(words)-i)] for i in range(len(words))] 
+        log_pr = [[{} for i in range(len(words)-i)] for i in range(len(words))] 
 
 
 
@@ -177,14 +178,14 @@ class PCFG():
             print("Auxiliary sentence :")
             print(new_sentence)
         
-        if len(words)==1:
-            result, element = check_Sent(log_pr[0][0])
-            if result :
-                origin,pos = str(element[0]).split("&",1)
-                tree = Tree(origin,[Tree(pos,[back[0][0][element][2]])])
-                return tree
-            else :
-                return False
+        # if len(words)==1:
+        #     result, element = check_Sent(log_pr[0][0])
+        #     if result :
+        #         origin,pos = str(element[0]).split("&",1)
+        #         tree = Tree(origin,[Tree(pos,[back[0][0][element][2]])])
+        #         return tree
+        #     else :
+        #         return False
         # Get higher 
         for i in range(1,len(words)): # Place in the row of the pyramid (lenght is i+1)
             for init in range(len(words)-i): # Place in the column of the pyramid 
