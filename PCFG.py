@@ -20,7 +20,6 @@ def check_Sent(liste_output):
                 proba = liste_output[element][0]
                 elementTrue = element
 
-
     return result, elementTrue
 
 class PCFG():
@@ -50,17 +49,14 @@ class PCFG():
                 if production.is_lexical() :
                     if str(production.rhs()[0]) not in self.lexicon:
                         self.lexicon[str(production.rhs()[0])] = defaultdict(float)
-                    # if (production.lhs(),) not in self.opposite_lexicon :
-                        # self.opposite_lexicon[(production.lhs(),)] = defaultdict(float)
 
 
                     if "&" not in str(production.lhs()) or len(str(production.lhs()))<2 :
                         self.lexicon[str(production.rhs()[0])][(production.lhs(),)]+=10.
-                        # self.opposite_lexicon[(production.lhs(),)][str(production.rhs()[0])]+=1
-                        # self.lexicon_count[(production.lhs(),)] +=10.
                         self.lexicon_count[str(production.rhs()[0])]+=10
                     else :
-                        A,B = str(production.lhs()).split("&",1)
+                        B = str(production.lhs()).split("&")[-1]
+                        A = str(production.lhs()).strip("&"+B)
                         A = (grammar.Nonterminal(A),)
                         B = (grammar.Nonterminal(B),)
                         if A not in self.lexicon :
@@ -71,21 +67,13 @@ class PCFG():
                         self.lexicon[str(production.rhs()[0])][(production.lhs(),)]+=8.
                         self.lexicon[str(production.rhs()[0])][A]+=1.
                         self.lexicon[str(production.rhs()[0])][B]+=1.
-                        # self.opposite_lexicon[(production.lhs(),)][str(production.rhs()[0])]+=1
-                        # self.lexicon[]
-                        # self.lexicon_count[(production.lhs(),)] +=10.
                         self.lexicon_count[str(production.rhs()[0])]+=10
                     
                 else :
                     if len(str(production.lhs()))>0:
                         if production.rhs() not in self.rules :
                             self.rules[production.rhs()] = defaultdict(float) 
-                        # if (production.lhs,) not in self.opposite_rules :
-                            # self.opposite_rules[(production.lhs(),)] = defaultdict(float)
-
-
                         self.rules[production.rhs()][(production.lhs(),)]+=1.
-                        # self.opposite_rules[(production.lhs(),)][production.rhs()]+=1.
                         self.rule_count[production.rhs()] +=1.
         
         for left in self.rules.keys():
@@ -188,8 +176,15 @@ class PCFG():
         if verbose :
             print("Auxiliary sentence :")
             print(new_sentence)
-            
-
+        
+        if len(words)==1:
+            result, element = check_Sent(log_pr[0][0])
+            if result :
+                origin,pos = str(element[0]).split("&",1)
+                tree = Tree(origin,[Tree(pos,[back[0][0][element][2]])])
+                return tree
+            else :
+                return False
         # Get higher 
         for i in range(1,len(words)): # Place in the row of the pyramid (lenght is i+1)
             for init in range(len(words)-i): # Place in the column of the pyramid 

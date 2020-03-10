@@ -38,14 +38,7 @@ def get_leaves(tree, label = None):
 
     return leaves
 
-# def uncollapse(tree, unaryChar = "&",label = ""):
-#     for child in tree:
-#         if isinstance(child, Tree):
-#             uncollapse(child)
-#         else:
-            
 
-#     return tree
 
 
 
@@ -85,7 +78,7 @@ def evaluate_parser(pcfg, test_trees, filepath="parser_output.txt", write = True
         test_sentence = list(tree.flatten())
         parsed_tree = pcfg.CYK(test_sentence,verbose = False)
         test_sentence_str = ' '.join(str(parsed_tree).split())
-
+        print("Tested sentence{}".format(test_sentence))
 
         if parsed_tree:
             
@@ -115,8 +108,10 @@ def evaluate_parser(pcfg, test_trees, filepath="parser_output.txt", write = True
 
             s = scorer.Scorer() ## old
             result = s.score_trees(target_tree, predicted_tree)
-
-            print('Recall =' + str(result.recall))
+            try :
+                print('Recall =' + str(result.recall))
+            except :
+                print("No Recall")
             print('Precision =' + str(result.prec))
             recall_list.append(result.recall)
             precision_list.append(result.prec)
