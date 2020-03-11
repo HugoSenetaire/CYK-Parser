@@ -34,7 +34,6 @@ if __name__ == "__main__" :
     # Put embeddings in PCFG
     pcfg.add_embedding(embeddings, word_id, id_word)
     
-
 ##Simple Test
     if args.mode == 'eval':
         if args.sentence is None :
@@ -43,9 +42,10 @@ if __name__ == "__main__" :
             for sentence in args.sentence.split("\n"):
                 tree = pcfg.CYK(sentence, verbose = True)
                 if not tree :
-                    print("The CYK was not able to parse the sentence '{sentence}'")
+                    print("The CYK was not able to parse the sentence '{}' ".format(sentence))
                 else :
-                    print("The tree for the sentence '{sentence}'")
+                    print("The tree for the sentence '{}'".format(sentence))
+                    tree.un_chomsky_normal_form(unaryChar="&")
                     print(tree)
    
 ## Global evaluation :

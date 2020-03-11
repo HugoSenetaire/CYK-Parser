@@ -60,6 +60,8 @@ def evaluate_parser_multiprocess(pcfg, test_trees, filepath="parser_output.txt",
     precision_list = []
     lines = []
 
+
+    test_trees = test_trees[:5]
     if write :
         with open(filepath, 'w') as file:
             file.write("" )

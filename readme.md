@@ -28,7 +28,7 @@ If mode sentence : the output is the parsed tree of the input sentence.
 
 Parse the sentence "Un ours mange une pomme .":
 ```bash
-./run.sh --i "Un ours mange une pomme ."
+./run.sh -s "Un ours mange une pomme ."
 ```
 
 Get accuracy on the validation dataset :
