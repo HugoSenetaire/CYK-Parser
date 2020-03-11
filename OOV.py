@@ -76,7 +76,7 @@ def closest(word, lexicon, embeddings = None, word_id = {}, id_word = {}, possib
             if dist < best_dist :
                 best_dist = dist 
                 best_word = word_test
-        candidates.append((best_word,1.0)
+        candidates.append((best_word,1.0))
         return candidates
 
     else :
