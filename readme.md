@@ -1,4 +1,4 @@
-# Parser for French
+# CYK Parser
 
 This is the work for the TP2 for for the master MVA course Natural Language processing 
 
@@ -14,9 +14,9 @@ There are 2 mode to use the code :
 - `--mode sentence -s "Your sentences to parse"` will run the parser on a unique sentence.  Each token has to be separated by a single whitespace. The input can take several lines with one sentence per line.
 
 There are several other option :
-`-h` : give information on all the different options
-`-w True` : if given, the output of a dataset is written to `<datasetPath>\<dataset_name>_output.txt`. The non parsable sentence from the dataset are written to `non_parsable.txt`.
-`-e <path_to_embedding>`: if given, it will use the given file for Out of Vocabulary embedding. The default embedding is : [polyglot-fr.pkl](https://sites.google.com/site/rmyeid/projects/polyglot)
+- `-h` : give information on all the different options
+- `-w True` : if given, the output of a dataset is written to `<datasetPath>\<dataset_name>_output.txt`. The non parsable sentence from the dataset are written to `non_parsable.txt`.
+- `-e <path_to_embedding>`: if given, it will use the given file for Out of Vocabulary embedding. The default embedding is : [polyglot-fr.pkl](https://sites.google.com/site/rmyeid/projects/polyglot)
 
 ## Output
 
