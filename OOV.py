@@ -59,7 +59,10 @@ def normalize(word, word_id):
     return word
 
 
-def closest(word, lexicon, embeddings = None, word_id = {}, id_word = {}, possibleNPP = True, maxembedd = 1): # Regarder si il faut pas un default dict
+def closest(word, lexicon, embeddings = None, word_id = {}, id_word = {}, possibleNPP = True, maxembedd = 5):
+    """ Get maxembedd closest elements from embeddings if word is in embedding. Otherwise give the word with the smallest edit distance from lexicon
+        Return a list of tuple (word, coefficient)
+    """
     candidates = []
     if word[0].isupper() and possibleNPP : # Check for NPP
         candidates.append(('Cora',0.01))
@@ -73,12 +76,10 @@ def closest(word, lexicon, embeddings = None, word_id = {}, id_word = {}, possib
             if dist < best_dist :
                 best_dist = dist 
                 best_word = word_test
-        longestWord = max(len(best_word),len(word))
-        candidates.append((best_word,max(longestWord-dist,1.0)/longestWord))
+        candidates.append((best_word,1.0)
         return candidates
 
     else :
-        # if maxembedd > 1:
         word = wordNew
         word_index = word_id[word]
         e = embeddings[word_index]
@@ -87,23 +88,9 @@ def closest(word, lexicon, embeddings = None, word_id = {}, id_word = {}, possib
             if word_test in word_id :
                 word_test_index = word_id[word_test]
                 distance.append((word_test,-embeddings[word_test_index].dot(e)/np.linalg.norm(embeddings[word_test_index])/np.linalg.norm(e)))
-        sorted(distance,key=itemgetter(1))
+        distance = sorted(distance,key=itemgetter(1))
         for k in range(maxembedd):
             candidates.append((distance[k][0],1.0))
-        # else :
-        #     word = wordNew
-        #     word_index = word_id[word]
-        #     e = embeddings[word_index]
-        #     best_dist = -float("inf")
-        #     best_word = None
-        #     for word_test in lexicon :
-        #         if word_test in word_id :
-        #             word_test_index = word_id[word_test]
-        #             distance = (embeddings[word_test_index].dot(e))/np.linalg.norm(embeddings[word_test_index])/np.linalg.norm(e)
-        #             if distance > best_dist:
-        #                 best_dist = distance
-        #                 best_word = word_test
-        #     candidates.append((best_word,1.0))
         return candidates
 
 

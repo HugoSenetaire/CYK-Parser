@@ -31,8 +31,6 @@ class PCFG():
         self.lexicon_count = defaultdict(int)
 
 
-        self.opposite_rules = {}
-        self.opposite_lexicon = {}
 
 
         self.embeddings = None
@@ -169,15 +167,13 @@ class PCFG():
             
             new_sentence+=" "    
 
-        # print("=============================")
-        # for k in range(len(words)):
-        #     print(words[k])
-        #     print(back[0][k])
-                
+
         if verbose :
             print("Auxiliary sentence :")
             print(new_sentence)
         
+
+        # If only one words, we reconstruct the tree :
         if len(words)==1:
             result, element = check_Sent(log_pr[0][0])
             if result :
@@ -194,7 +190,7 @@ class PCFG():
                 tree = Tree("SENT", [Tree(str(elementTrue[0]),[back[0][0][element][2]])])
                 return tree
 
-        
+        # Check the upper cells of the pyramid
         for i in range(1,len(words)): # Place in the row of the pyramid (lenght is i+1)
             for init in range(len(words)-i): # Place in the column of the pyramid 
                 for length_init in range(1,i+1): # Where to split in the sentence
@@ -218,18 +214,12 @@ class PCFG():
                                     elif currentProb>log_pr[i][init][s][0] :
                                         log_pr[i][init][s] = (currentProb, length_init-1, init, element1, length_end-1, init+length_init, element2)
                                         back[i][init][s] = (length_init-1, init, element1, length_end-1, init+length_init, element2)
-                                   
-            # print("=============================")
-            # for k in range(len(back[i])):
-            #     # print(words[k])
-            #     print(back[i][k])
-        
+                                
 
 
         resultParsable, element = check_Sent(log_pr[-1][0])
         if not resultParsable:
             return False
-
         else :
             tree = self.build_tree(back, i, 0, element)
             tree.set_label("SENT")
@@ -239,7 +229,7 @@ class PCFG():
 
     def build_tree(self, back, i, j, value):
         """
-        build_tree from the pyramid 
+        build_tree from the pyramid table backs
         :param back: dictionnary for the pyramid
         :param i: row in the pyramid
         :param j: column in the pyramid
@@ -249,9 +239,9 @@ class PCFG():
         list_children = []
         list_back = back[i][j][value]
         if i > 0:
-            for element in list_back[2]:
+            for element in list_back[2]: # First symbol
                 list_children.append(self.build_tree(back,list_back[0], list_back[1], (element,)))
-            for element in list_back[5]:
+            for element in list_back[5]: # Second symbol
                 list_children.append(self.build_tree(back,list_back[3], list_back[4], (element,)))
         else :
             list_children = [self.dic_replacement[j,back[i][j][value][2]]]

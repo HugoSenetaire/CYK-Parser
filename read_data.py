@@ -13,10 +13,6 @@ def split_file(filepath, write = False):
     nbLines = len(lines)
     trainLines = lines[:int(0.9*nbLines)]
     testLines = lines[int(0.8*nbLines):int(0.9*nbLines)]
-    # aux = lines[:int(0.9*nbLines)]
-    # np.random.shuffle(aux)
-    # trainLines = aux[:int(0.8*nbLines)]
-    # testLines = aux[int(0.8*nbLines):int(0.9*nbLines)]
     valLines = lines[int(0.9*nbLines):]
 
     if write :
