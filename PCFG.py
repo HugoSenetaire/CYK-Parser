@@ -178,15 +178,23 @@ class PCFG():
             print("Auxiliary sentence :")
             print(new_sentence)
         
-        # if len(words)==1:
-        #     result, element = check_Sent(log_pr[0][0])
-        #     if result :
-        #         origin,pos = str(element[0]).split("&",1)
-        #         tree = Tree(origin,[Tree(pos,[back[0][0][element][2]])])
-        #         return tree
-        #     else :
-        #         return False
-        # Get higher 
+        if len(words)==1:
+            result, element = check_Sent(log_pr[0][0])
+            if result :
+                origin,pos = str(element[0]).split("&",1)
+                tree = Tree(origin,[Tree(pos,[back[0][0][element][2]])])
+                return tree
+            else :
+                elementTrue = None
+                proba = -float("inf")
+                for element in back[0][0].keys():
+                    if back[0][0][element][0]>proba:
+                        proba = back[0][0][element][0]
+                        elementTrue = element
+                tree = Tree("SENT", [Tree(str(elementTrue[0]),[back[0][0][element][2]])])
+                return tree
+
+        
         for i in range(1,len(words)): # Place in the row of the pyramid (lenght is i+1)
             for init in range(len(words)-i): # Place in the column of the pyramid 
                 for length_init in range(1,i+1): # Where to split in the sentence

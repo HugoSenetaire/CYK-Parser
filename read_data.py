@@ -11,8 +11,6 @@ def split_file(filepath, write = False):
         lines = f.readlines()
     
     nbLines = len(lines)
-    # np.random.seed(1)
-    # np.random.shuffle(lines)
     trainLines = lines[:int(0.9*nbLines)]
     testLines = lines[int(0.8*nbLines):int(0.9*nbLines)]
     # aux = lines[:int(0.9*nbLines)]

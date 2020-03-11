@@ -58,6 +58,9 @@ if __name__ == "__main__" :
     # aux = "Les ascenseurs des HLM de Paris"
     # aux = "Les marchés truqués"
     # aux = "Ils se sont assurés que l' Irak ne dispose d' aucune fusée à longue portée pouvant menacer ses voisins ."
+    # aux = "Ajaccio"
+    # aux = 'Protagonistes'
+    # aux = 'Affaire politico- financière italienne'
     # print(pcfg.CYK(aux, verbose =True))
 ## Global evaluation :
     # evaluate_parser(pcfg, listTrees_test, filepath="parser_output.txt", write = False)
