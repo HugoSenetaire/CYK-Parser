@@ -1,4 +1,4 @@
-# Parser for French
+# CYK Parser
 
 This is the work for the TP2 for for the master MVA course Natural Language processing 
 
